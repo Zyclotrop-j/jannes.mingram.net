@@ -1,0 +1,9 @@
+{
+  "name": "jannes.mingram.net",
+  "version": "0.1",
+  "author": "Jannes Mingram",
+  "description": "My website",
+  "devDependencies": {
+    "webpack": "^1.13.2"
+  }
+}
