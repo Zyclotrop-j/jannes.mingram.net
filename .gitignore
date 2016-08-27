@@ -1,1 +1,4 @@
 node_modules
+/src/docReady/docready.js
+/src/scss/font-awesome
+/src/fonts
