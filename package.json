@@ -1,9 +1,17 @@
 {
   "name": "jannes.mingram.net",
-  "version": "0.1",
+  "version": "0.0.1",
   "author": "Jannes Mingram",
   "description": "My website",
+  "scripts": {
+    "start": "node ./node_modules/webpack-dev-server/bin/webpack-dev-server.js",
+    "build": "node ./node_modules/webpack/bin/webpack.js"
+  },
   "devDependencies": {
-    "webpack": "^1.13.2"
+    "babel-core": "^6.14.0",
+    "babel-loader": "^6.2.5",
+    "babel-preset-latest": "^6.14.0",
+    "webpack": "^1.13.2",
+    "webpack-dev-server": "^1.15.0"
   }
 }
