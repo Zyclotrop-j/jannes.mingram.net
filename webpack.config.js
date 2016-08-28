@@ -31,6 +31,10 @@ module.exports = {
             { test: /\.woff2$/, loader: 'url?limit=65000&mimetype=application/font-woff2&name=fonts/[name].[ext]' },
             { test: /\.ttf$/, loader: 'url?limit=65000&mimetype=application/octet-stream&name=fonts/[name].[ext]' },
             { test: /\.eot$/, loader: 'url?limit=65000&mimetype=application/vnd.ms-fontobject&name=fonts/[name].[ext]' },
+            { 
+                test: /\.json$/,
+                loader: 'json' 
+            },
             {
                 test: /\.scss$/,
                 loader: ExtractTextPlugin.extract(

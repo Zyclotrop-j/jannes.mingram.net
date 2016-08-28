@@ -8,6 +8,8 @@ import './fonts/fontawesome-webfont.svg';
 import './fonts/fontawesome-webfont.ttf';
 import './fonts/fontawesome-webfont.woff';
 import './fonts/fontawesome-webfont.woff2';
+import contact from '../../website data/contact.json';
+import vcf from 'vcf';
 import hg from 'mercury';
 
 
@@ -33,7 +35,14 @@ App.render = function render(state) {
             type: 'button',
             value: 'Click me!',
             'ev-click': hg.send(state.channels.clicks)
-        })
+        }),
+        h('br'),
+        'my vCard:',
+        h('div', [
+            vcf.fromJSON( contact ).toString( '4.0' ),
+            h('br'),
+            JSON.stringify(contact)
+        ])
     ]);
 };
 docReady(() => {
