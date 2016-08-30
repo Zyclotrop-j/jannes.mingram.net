@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "bootstrap": "^4.0.0-alpha.3",
+    "lodash": "^4.15.0",
     "mercury": "^14.1.0",
     "vcf": "^1.1.0"
   }

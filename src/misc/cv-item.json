@@ -33,16 +33,20 @@
         "cat": {
             "type": "string"
         },
-        "place": : {
+        "uri": {
+            "type": "string",
+            "format": "uri"
+        },
+        "location": {
             "type": "string",
             "properties": {
                 "@type": {
                     "const": "Place"
                 },
-                "label": {
+                "name": {
                     "type": "string"
                 },
-                "ISO 6709": {
+                "coord": {
                     "type": "string",
                     "format": "ISO6709"
                 },

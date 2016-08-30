@@ -9,15 +9,22 @@ import './fonts/fontawesome-webfont.ttf';
 import './fonts/fontawesome-webfont.woff';
 import './fonts/fontawesome-webfont.woff2';
 import contact from '../../website data/contact.json';
+import contents from '../../website data/contents.json';
 import vcf from 'vcf';
 import hg from 'mercury';
 
+import cvitem from './widgets/cv-item';
+import vcard from './widgets/contact';
+
 
 var h = hg.h;
+var _app = null;
 
 function App() {
     return hg.state({
         value: hg.value(0),
+        contactInfo: hg.value([]),
+        cv: hg.value([]),
         channels: {
             clicks: incrementCounter
         }
@@ -28,23 +35,34 @@ function incrementCounter(state) {
     state.value.set(state.value() + 1);
 }
 
+function setContactInfo(state, data) {
+    state.contactInfo.set(data);
+}
+function setCV(state, data) {
+    state.cv.set(data);
+}
+
+window.setTimeout(() => setContactInfo(_app, contact), 1000);
+window.setTimeout(() => setCV(_app, contents), 2000);
+
 App.render = function render(state) {
-    return h('div.counter', [
-        'The state ', h('code', 'clickCount'),
-        ' has value: ' + state.value + '.', h('input.button', {
-            type: 'button',
-            value: 'Click me!',
-            'ev-click': hg.send(state.channels.clicks)
-        }),
-        h('br'),
-        'my vCard:',
-        h('div', [
-            vcf.fromJSON( contact ).toString( '4.0' ),
-            h('br'),
-            JSON.stringify(contact)
-        ])
+    let cv = [];
+    if (!!state.cv) {
+        const cats = [...new Set(state.cv.map(i => i.cat))];
+        cv = cats.map(i => h('div', [
+            h('h2', i),
+            ...state.cv.filter(j => j.cat === i).map(j => cvitem(j, state.channels))
+        ]))
+    }
+    const contactInfo = (state.contactInfo.length > 0) ? vcf.fromJSON( state.contactInfo ) : undefined;
+    return h('main', [
+        vcard(contactInfo),
+        ...cv,
     ]);
 };
+
+_app = App();
+
 docReady(() => {
-    hg.app(window.document.body, App(), App.render);
+    hg.app(window.document.body, _app, App.render);
 });
