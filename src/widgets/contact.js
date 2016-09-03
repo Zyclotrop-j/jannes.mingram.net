@@ -11,7 +11,10 @@ export default function(vcard, channels) {
         return h('address', [
             grid.row([
                 grid.col(
-                   heading.h1(vcard.data.fn._data),
+                    heading.h2('Full Name', ['visible-print-block'])
+                ),
+                grid.col(
+                   heading.h3(vcard.data.fn._data, ['statement']),
                 ),
             ]),
             heading.h2('CV', ['visible-print-block']),

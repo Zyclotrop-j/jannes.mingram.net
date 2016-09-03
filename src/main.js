@@ -16,6 +16,8 @@ import hg from 'mercury';
 import cvitem from './widgets/cv-item';
 import vcard from './widgets/contact';
 import main from './modules/main';
+import cover from './modules/cover';
+import summery from './modules/summery';
 import heading from './tags/heading';
 import grid from './tags/grid';
 
@@ -28,6 +30,7 @@ function App() {
         value: hg.value(0),
         contactInfo: hg.value([]),
         cv: hg.value([]),
+        time: hg.value(Date.now()),
         channels: {
             clicks: incrementCounter
         }
@@ -44,6 +47,8 @@ function setContactInfo(state, data) {
 function setCV(state, data) {
     state.cv.set(data);
 }
+window.setInterval(() => _app.time.set(Date.now()), 500);
+
 
 window.setTimeout(() => setContactInfo(_app, contact), 1000);
 window.setTimeout(() => setCV(_app, contents), 2000);
@@ -58,10 +63,16 @@ App.render = function render(state) {
         ]))
     }
     const contactInfo = (state.contactInfo.length > 0) ? vcf.fromJSON( state.contactInfo ) : undefined;
-    return main([
-        vcard(contactInfo),
-        heading.h2('CV', ['visible-print-block']),
-        ...cv,
+    return h('div', [
+        cover(state, state.channels),
+        h('div.main-wrapper', main([
+            summery(state, state.channels),
+            vcard(contactInfo),
+            h('section', [
+                heading.h2('CV', ['visible-print-block']),
+                ...cv,
+            ])
+        ]))
     ]);
 };
 
