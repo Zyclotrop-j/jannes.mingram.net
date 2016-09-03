@@ -8,14 +8,14 @@ export default function(state, channel) {
     
     return h('div.cover-wrapper', [
         h('div.cover', new Cover()),
-        h('div.greeting.container', h('div.row', [
-            h('h2.col-xs-12', "Jannes Interactive CV"),
+        h('div.greeting.container', state.contactname ? h('div.row.animated.fadeIn', [
+            h('h2.col-xs-12', `${state.contactname}'s Interactive CV`),
             h('div.col-xs-12', [
                 h('i.fa.fa-angle-double-down'),
                 h('span', "Scroll to start"),
                 h('i.fa.fa-angle-double-down'),
             ])
-        ]))
+        ]) : '')
     ]);
 };
 

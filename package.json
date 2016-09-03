@@ -24,6 +24,7 @@
     "webpack-dev-server": "^1.15.0"
   },
   "dependencies": {
+    "animate.css": "^3.5.2",
     "bootstrap": "^4.0.0-alpha.3",
     "hint.css": "^2.3.2",
     "lodash": "^4.15.0",

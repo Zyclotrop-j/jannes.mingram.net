@@ -31,6 +31,7 @@ function App() {
         contactInfo: hg.value([]),
         cv: hg.value([]),
         time: hg.value(Date.now()),
+        contactname: hg.value(''),
         channels: {
             clicks: incrementCounter
         }
@@ -41,8 +42,14 @@ function incrementCounter(state) {
     state.value.set(state.value() + 1);
 }
 
+function setName(state, data) {
+    state.contactname.set(data);
+}
+
 function setContactInfo(state, data) {
     state.contactInfo.set(data);
+    console.log(vcf.fromJSON( data ));
+    setName(state, vcf.fromJSON( data ).data.n._data.split(';')[1]);
 }
 function setCV(state, data) {
     state.cv.set(data);
