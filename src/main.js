@@ -15,6 +15,9 @@ import hg from 'mercury';
 
 import cvitem from './widgets/cv-item';
 import vcard from './widgets/contact';
+import main from './modules/main';
+import heading from './tags/heading';
+import grid from './tags/grid';
 
 
 var h = hg.h;
@@ -49,14 +52,15 @@ App.render = function render(state) {
     let cv = [];
     if (!!state.cv) {
         const cats = [...new Set(state.cv.map(i => i.cat))];
-        cv = cats.map(i => h('div', [
-            h('h2', i),
-            ...state.cv.filter(j => j.cat === i).map(j => cvitem(j, state.channels))
+        cv = cats.map(i => h('div.row', [
+            grid.col(heading.h3(i)),
+            ...state.cv.filter(j => j.cat === i).map(j => grid.col(cvitem(j, state.channels)))
         ]))
     }
     const contactInfo = (state.contactInfo.length > 0) ? vcf.fromJSON( state.contactInfo ) : undefined;
-    return h('main', [
+    return main([
         vcard(contactInfo),
+        heading.h2('CV', ['visible-print-block']),
         ...cv,
     ]);
 };
