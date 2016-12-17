@@ -120,6 +120,8 @@ $font-family-sans-serif: Sintony, -apple-system, BlinkMacSystemFont, "Segoe UI",
 $font-family-serif:      "Headland One", Georgia, "Times New Roman", Times, serif !default;
 $font-family-monospace:  Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !default;
 $font-family-base:       $font-family-sans-serif !default;
+$font-family-signature: 'Cantata One', "Helvetica Neue", Arial, sans-serif !default;
+$font-ocr:              Arial, sans-serif !default;
 
 // Pixel value used to responsively scale all typography. Applied to the `<html>` element.
 $font-size-root: 16px !default;

@@ -9,7 +9,6 @@
         left: 0;
         right: 0;
         bottom: 0;
-        z-index: -1;
         background-color: black;
     }
     > .greeting {
@@ -24,9 +23,140 @@
         > div {
             color: white;
             z-index: 1;
+            width:100vw;
+            height: 100vh;
+            > h2 {
+                align-self: flex-end;
+            }
         }
     }
 }
-.main-wrapper {
-    background-color: white;
+%hidden {
+    transform: translateY( -100% ) translateX( 10% ) rotateX( -180deg );
 }
+.main-wrapper {
+    position: relative;
+    width: 100vw;
+    background-color: white;
+    padding-top: 12em;
+    transition: padding-top 0.8s;
+    &.tight {
+        padding-top: 4em;
+    }
+}
+.sticky-head {
+    position: fixed;
+    left: 0;
+    right: 0;
+    padding-top: 1.5rem;
+    background-color: white;
+    z-index: 2;
+    transition: opacity 0.25s, max-height 3s, border-bottom-color 0.5s;
+    opacity: 1;
+    max-height: 50vh;
+    border-bottom: 1.5px solid transparent;
+    &.hidden {
+        opacity: 0;
+        max-height: 1px;
+    }
+    &.border {
+        border-bottom-color: silver;
+    }
+}
+.summery {
+    transition: height 1.5s;
+    height: 100%;
+    &.flipped {
+        height: 101%;
+    }
+}
+.summery .me {
+    &:hover:before {
+        border-bottom: 33px solid white;
+        border-right: 33px solid white;
+        transition: border 0.7s cubic-bezier(0.175, 0.885, 0.32, 4);
+    }
+    &:before {
+        transition: border 0.7s cubic-bezier(0.175, 0.885, 0.32, 1);
+        content: "";
+        position: absolute;
+        top: -2px;
+        right: -2px;
+        width: 0px;
+        height: 0px;
+        border-bottom: 30px solid white;
+        border-right: 30px solid white;
+        box-shadow: -4px 4px 4px rgba(0,0,0,0.3);
+    }
+    padding: 1rem;
+}
+.show-hide {
+    &.as-cards > * {
+        border: 1px solid silver;
+    }
+    position: relative;
+    .show, .hide {
+        transition: transform 2s;
+        background-color: white;
+        backface-visibility: hidden;
+        transform-origin: right center;
+    }
+    .show {
+        position: relative;
+        top: 0;
+        width: 100%;
+        height: auto;
+    }
+    &:not(.flip) > .show {
+        @extend %hidden;
+        position: absolute;
+    }
+    &.flip > .hide {
+        @extend %hidden;
+        position: absolute;
+    }
+}
+.sr-only-not-focus:not(:focus) {
+    @extend .sr-only;
+}
+
+.signature {
+    font-family: $font-family-signature;
+}
+.ocr {
+    font-family: $font-ocr;
+}
+address {
+    ul.email {
+        list-style: none inside;
+    }
+    a.email, a.phone {
+        position: absolute;
+        left: 1rem;
+        margin-left: 0.5rem;
+    }
+}
+
+.cv-section {
+    padding-bottom: 2rem;
+    border-bottom: 1.5px solid silver;
+    margin-top: 3rem;
+}
+
+body {
+    overflow: hidden;
+}
+
+#scrollContainer {
+    height: 100vh;
+    // Whole page + scrollbar
+    width: calc( 100vw + 18px );
+    overflow-y: auto;
+    scroll-snap-type: mandatory;
+    scroll-behavior:smooth;
+}
+
+.snapTo {
+    scroll-snap-align: none start;
+}
+

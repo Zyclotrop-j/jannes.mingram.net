@@ -14,7 +14,7 @@ export default function(vcard, channels) {
                     heading.h2('Full Name', ['visible-print-block'])
                 ),
                 grid.col(
-                   heading.h3(vcard.data.fn._data, ['statement']),
+                   heading.h3(vcard.data.fn._data, ['statement', 'signature']),
                 ),
             ]),
             heading.h2('CV', ['visible-print-block']),

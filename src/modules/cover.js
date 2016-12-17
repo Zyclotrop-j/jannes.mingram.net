@@ -9,7 +9,7 @@ export default function(state, channel) {
     return h('div.cover-wrapper', [
         h('div.cover', new Cover()),
         h('div.greeting.container', state.contactname ? h('div.row.animated.fadeIn', [
-            h('h2.col-xs-12', `${state.contactname}'s Interactive CV`),
+            h('h2.col-xs-12', `${state.contactname}'${state.contactname.slice(-1) === "s" ? '' : 's'} Interactive CV`),
             h('div.col-xs-12', [
                 h('i.fa.fa-angle-double-down'),
                 h('span', "Scroll to start"),
@@ -27,7 +27,7 @@ proto.type = 'Widget';
 proto.init = function init() {
     var elem = document.createElement('div');
     var container = document.createElement('div');
-    console.log(THREE)
+    container.className = 'hidden-print';
     container.appendChild(elem);
     const widthBased = window.innerWidth > window.innerHeight;
     const width = widthBased ? window.innerWidth : window.innerHeight * 3 / 2;
@@ -53,9 +53,9 @@ proto.init = function init() {
           lighthousepower += 0.005;
           lightpower += (Math.floor(Math.random() * 100) / 10000);
           worldlightpower += Math.floor(Math.random() * 100) / 2000;
-          objects.light.power = (Math.sin(lightpower) + 1) * 5;
-          objects.worldlight.power = (Math.sin(worldlightpower) + 2) * 2;
-          objects.ligthhouselight.power = Math.pow((Math.cos(lighthousepower) + 1) / 2, 3) * 250;
+          objects.light.power = (Math.sin(lightpower) + 1) * 10;
+          objects.worldlight.power = (Math.sin(worldlightpower) + 2) * 3;
+          objects.ligthhouselight.power = Math.pow((Math.cos(lighthousepower) + 1) / 2, 3) * 800;
           // When Math.cos = 1 = max, then offset = 0
           objects.ligthhouselight.position.x =
             ligthhouselightposition[0] + (Math.sin(lighthousepower)) * (width / 400 * 30);

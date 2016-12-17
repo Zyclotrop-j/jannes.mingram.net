@@ -10,7 +10,7 @@ export default function(location, channels) {
             'data-coord': location.coord, //ToDo: Link to gmaps
         }}, [srOnly('Find on google maps')]),
         h(`${location.url ? 'a' : 'span'}.name`, {
-            href: `//${location.url}`
+            href: location.url && (!location.url.startsWith('http') ? `https://${location.url}` : `${location.url}`) 
         }, location.name),
     ]);
 };

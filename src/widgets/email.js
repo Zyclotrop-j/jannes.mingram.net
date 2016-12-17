@@ -5,6 +5,6 @@ const h = hg.h;
 export default function(email, hasGPG) {
     return h('span.email', [
         h(`i.fa.fa-${hasGPG ? 'user-secret' : 'envelope-o'}`, [srOnly('Write me an email')]),
-        h('a.email', { href: `mailto:${email}` }, email),
+        h('a.email.ocr', { href: `mailto:${email}` }, email),
     ]);
 };
