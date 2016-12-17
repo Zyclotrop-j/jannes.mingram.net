@@ -102,7 +102,6 @@ function setSkillCollapsedState(state, idx, isOpen) {
 
 function setContactInfo(state, data) {
     state.contactInfo.set(data);
-    console.log(vcf.fromJSON( data ));
     setName(state, vcf.fromJSON( data ).data.n._data.split(';')[1]);
 }
 function setCV(state, data) {
