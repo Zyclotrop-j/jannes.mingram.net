@@ -11,13 +11,13 @@ export default function(state, channel) {
     const photo = state.contactInfo.length && parseCV(state.contactInfo).data.photo._data;
     
     return h(`div.summery.row${state.flipcard ? '.flipped': ''}`, [
-        h('div.col-xs'),
-        h(`div.col-xs-6.show-hide.as-cards${state.flipcard ? '.flip': ''}`, {
+        h('div.col-md.hidden-sm-down'),
+        h(`div.col-xs-12.col-md-${state.flipcard ? '9' : '6'}.show-hide.as-cards${state.flipcard ? '.flip': ''}`, {
             'ev-click': hg.send(channel.flipcard, 'auto'),
         }, [
             h('div.me.row.hide', [
                 h('div.name.col-xs-8', [
-                    h('h2.signature', name),
+                    h('h2.signature.u-accent', name),
                     h('p.lead', { innerHTML: summeryText.short.replace(/\n/g, '<br />') })
                 ]),
                 h('div.picture.col-xs-4', photo ? [
@@ -45,6 +45,6 @@ export default function(state, channel) {
                 }, 'Toogle card')
             ])
         ]),
-    h('div.col-xs')
+    h('div.col-md.hidden-sm-down')
     ]);
 };

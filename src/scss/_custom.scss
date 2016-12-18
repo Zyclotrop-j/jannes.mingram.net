@@ -27,6 +27,11 @@
             height: 100vh;
             > h2 {
                 align-self: flex-end;
+                color: $color-primary-0;
+                & + div {
+                    color: $color-secondary-2-2;
+                    
+                }
             }
         }
     }
@@ -49,6 +54,7 @@
     left: 0;
     right: 0;
     padding-top: 1.5rem;
+    padding-bottom: 1px;
     background-color: white;
     z-index: 2;
     transition: opacity 0.25s, max-height 3s, border-bottom-color 0.5s;
@@ -91,6 +97,7 @@
     padding: 1rem;
 }
 .show-hide {
+    transition: max-width 0.5s;
     &.as-cards > * {
         border: 1px solid silver;
     }
@@ -125,10 +132,21 @@
 }
 .ocr {
     font-family: $font-ocr;
+    color: $gray-dark;
 }
 address {
     ul.email {
         list-style: none inside;
+        @include media-breakpoint-only(sm) {
+            -webkit-padding-start: 6rem;
+            -webkit-padding-end: 6rem;
+        }
+        @include media-breakpoint-only(xs) {
+            -webkit-padding-start: 4.5rem;
+            -webkit-padding-end: 5.5rem;
+        }
+        -webkit-padding-start: 2rem;
+        -webkit-padding-end: 2rem;
     }
     a.email, a.phone {
         position: absolute;
@@ -186,4 +204,40 @@ menu.bottom {
     }
 }
 
+.u-accent {
+    display: inline-block;
+    &:after {
+        content: '';
+        border-bottom: 2.5px solid $color-primary-0;
+        width: calc( 100% + 10px);
+        left: -5px;
+        position: relative;
+        display: block;
+        transform: translateY(-3px) skewY(-0.5deg);
+    }
+    &.thin:after {
+        border-bottom: 0.5px solid $color-secondary-1-0;
+        width: calc( 100% + 3px);
+        left: -1px;
+         transform: translateY(-2px) skewY(-0.3deg);
+    }
+    &.signature:after {
+        border-bottom: 0.75px solid $color-primary-0;
+        width: calc( 100% - 10px );
+        left: 8px;
+    }
+}
 
+.skill {
+    & > div > div:nth-child(2) {
+        text-align: end;
+    }
+}
+
+.align-center {
+    align-self: center;
+}
+
+h1, h2, h3 {
+    font-family: $font-family-serif;
+}

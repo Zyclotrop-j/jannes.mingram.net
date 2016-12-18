@@ -8,12 +8,33 @@ $gray-light:                #818a91 !default;
 $gray-lighter:              #eceeef !default;
 $gray-lightest:             #f7f7f9 !default;
 
-$brand-primary:             #0275d8 !default;
-$brand-success:             #5cb85c !default;
-$brand-info:                #5bc0de !default;
-$brand-warning:             #f0ad4e !default;
-$brand-danger:              #d9534f !default;
-$brand-inverse:             $gray-dark !default;
+
+$color-primary-0: #F9B41F !default;	// Main Primary color */
+$color-primary-1: #FFCF68 !default;
+$color-primary-2: #FFC546 !default;
+$color-primary-3: #D69405 !default;
+$color-primary-4: #AF7800 !default;
+
+$color-secondary-1-0: #4B26AB !default;	// Main Secondary color (1) */
+$color-secondary-1-1: #795CC3 !default;
+$color-secondary-1-2: #5F3FB3 !default;
+$color-secondary-1-3: #371393 !default;
+$color-secondary-1-4: #2A0C78 !default;
+
+$color-secondary-2-0: #168999 !default;	// Main Secondary color (2) */
+$color-secondary-2-1: #4CA8B5 !default;
+$color-secondary-2-2: #2E93A1 !default;
+$color-secondary-2-3: #067483 !default;
+$color-secondary-2-4: #025E6B !default;
+
+$brand-primary:             $color-secondary-1-0!default;
+$brand-secondary:           $color-primary-0 !default;
+$brand-tertiary:            $color-secondary-2-0 !default;
+$brand-success:             #112200 !default;
+$brand-info:                $brand-secondary !default;
+$brand-warning:             $color-primary-2 !default;
+$brand-danger:              #882211 !default;
+$brand-inverse:             $brand-tertiary !default;
 
 
 // Options
@@ -117,7 +138,7 @@ $grid-gutter-width: 30px !default;
 // Font, line-height, and color for body text, headings, and more.
 
 $font-family-sans-serif: Sintony, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !default;
-$font-family-serif:      "Headland One", Georgia, "Times New Roman", Times, serif !default;
+$font-family-serif:      HeadlandOne, Georgia, "Times New Roman", Times, serif !default;
 $font-family-monospace:  Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !default;
 $font-family-base:       $font-family-sans-serif !default;
 $font-family-signature: 'Cantata One', "Helvetica Neue", Arial, sans-serif !default;
