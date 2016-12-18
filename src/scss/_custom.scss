@@ -137,7 +137,7 @@ address {
     }
 }
 
-.cv-section {
+.cv-section, section.item {
     padding-bottom: 2rem;
     border-bottom: 1.5px solid silver;
     margin-top: 3rem;
@@ -152,11 +152,38 @@ body {
     // Whole page + scrollbar
     width: calc( 100vw + 18px );
     overflow-y: auto;
-    scroll-snap-type: mandatory;
-    scroll-behavior:smooth;
+    scroll-behavior: smooth;
 }
 
 .snapTo {
-    scroll-snap-align: none start;
+     position: relative;
+    @for $i from 5 through 20 {
+        &.off#{$i}0 {
+            top: $i * -10px;
+        }
+    }
 }
+
+.description + .description, .fa + .name  {
+    padding-left: 0.5rem;
+}
+
+article.cvitem {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+menu.bottom {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 1;
+    margin-bottom: 0;
+    padding: 1rem;
+    transition: bottom 1s;
+    &.hidden {
+        bottom: -6rem;
+    }
+}
+
 

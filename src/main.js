@@ -10,10 +10,10 @@ import './fonts/fontawesome-webfont.ttf';
 import './fonts/fontawesome-webfont.woff';
 import './fonts/fontawesome-webfont.woff2';
 
-import 'scrollsnap-polyfill/dist/scrollsnap-polyfill.bundled.js';
 import vcf from 'vcf';
 import hg from 'mercury';
 import _ from 'lodash';
+import smoothscroll from 'smoothscroll';
 
 import contactdata from '../../website data/contact.json';
 import contents from '../../website data/contents.json';
@@ -59,6 +59,7 @@ function App() {
         contactDataVisible: hg.value(false),
         contactBorderVisible: hg.value(false),
         summeryIsTight: hg.value(false),
+        filterVisible: hg.value(false),
         channels: {
             clicks: incrementCounter,
             setSkillCollapsedState,
@@ -116,23 +117,50 @@ function toogleContactBorderVisibility(state, data) {
     state.contactBorderVisible.set(data === 'auto' ? !state.contactBorderVisible() : data);
 }
 
+function toogleFilterVisibility(state, data) {
+    state.filterVisible.set(data === 'auto' ? !state.filterVisible() : data);
+}
+
 function tooglesummeryIsTight(state, data) {
     state.summeryIsTight.set(data === 'auto' ? !state.summeryIsTight() : data);
 }
 
+let snapToGrid = true;
 const isInitCB = _.once(() => {
    const scrollContainer = document.querySelector('body > div');
+   let prevScroll = scrollContainer.scrollTop;
+   
     scrollContainer.addEventListener("scroll", (e) =>
-        toogleContactDataVisibility(_app, document.querySelector(".sticky-head-reveal").getBoundingClientRect().top < 0)
+        toogleContactDataVisibility(_app, document.querySelector(".sticky-head-reveal").getBoundingClientRect().top <= 0)
     );
 
     scrollContainer.addEventListener("scroll", (e) =>
-        toogleContactBorderVisibility(_app, document.querySelector(".summery ").getBoundingClientRect().top > document.querySelector(".sticky-head").getBoundingClientRect().bottom)
+        toogleContactBorderVisibility(_app, document.querySelector(".summery ").getBoundingClientRect().top >= document.querySelector(".sticky-head").getBoundingClientRect().bottom)
+    );
+    
+    scrollContainer.addEventListener("scroll", (e) =>
+        toogleFilterVisibility(_app, 
+            document.querySelector(".filterMenuOn ").getBoundingClientRect().top <= 0 &&
+            document.querySelector(".filterMenuOff ").getBoundingClientRect().top > 0
+        )
     );
 
     scrollContainer.addEventListener("scroll", (e) =>
-        tooglesummeryIsTight(_app, document.querySelector(".main-wrapper ").getBoundingClientRect().top < (window.innerHeight / 4))
-    ); 
+        tooglesummeryIsTight(_app, document.querySelector(".main-wrapper ").getBoundingClientRect().top <= (window.innerHeight / 4))
+    );
+    
+    scrollContainer.addEventListener("scroll", _.debounce((e) => {
+            const targets = [...document.querySelectorAll(".snapTo")].map(i => (_.assign({ element: i }, _.pick(i.getBoundingClientRect(), ['top', 'bottom']))));
+            const newScroll = scrollContainer.scrollTop;
+            const isDown = newScroll > prevScroll;
+            prevScroll = newScroll + 0;
+            const closestElement = _.minBy(targets.filter(i => (isDown ? i.top >= -100 : i.top <= 100)), q => Math.abs(q.top));
+            if (snapToGrid) {
+                scrollContainer.scrollTop  = (scrollContainer.scrollTop + closestElement.top);
+            }
+            
+    }, 200));
+   
 });
 
 window.setInterval(() => _app.time.set(Date.now()), 500);
@@ -154,57 +182,104 @@ App.render = function render(state) {
     if (!!state.cv) {
         const cats = [...new Set(state.cv.map(i => i.cat))];
         cv = cats.map(i => h('div.row.cv-section', [
+            h('span.snapTo.off170'),
             grid.col(heading.h3(i)),
-            ...state.cv.filter(j => j.cat === i).sort((a, b) => state.sortCVDesc === (a[state.sortCVBy] < b[state.sortCVBy])).map(j => grid.col(cvitem(j, state.channels)))
+            ...state.cv.filter(j => j.cat === i).sort((a, b) => state.sortCVDesc === (a[state.sortCVBy] < b[state.sortCVBy])).reduce((p, j, jdx, arr) => p
+                .concat((!(jdx % 4) && jdx > 1 && arr.length > (jdx + 1)) ? [h('span.snapTo.off150')] : [])
+                .concat([grid.col(cvitem(j, state.channels))]),
+            [])
         ]))
     }
     let skillz = [];
     let languages = [];
+    let numberOfSkills = 0;
     if (!!state.skills) {
         const cats = [...new Set(state.skills.map(i => i.cat))];
-        skillz = cats.filter(i => i !== 'hum').map(i => h('div.row', [
-            grid.col(heading.h3(cat2h[i])),
-            ..._.orderBy(state.skills.map((i, idx) => _.merge({}, i, {key: idx})).filter(j => j.cat === i).filter(i => search(i, state.skillSearchTerm, state.importancyLevel)), [state.sortSKBy], [state.sortSKDesc ? 'desc': 'asc'])
-                .map(j => grid.col(skills(j, state.channels, state.skillCollapsedState[j.key]), {xs: 12, md: 6}))
-        ]));
-        languages = [h('div.row', [
-            grid.col(heading.h3('Languages')),
+        const filteredCats = cats.filter(i => i !== 'hum');
+        numberOfSkills = state.skills.filter(j => filteredCats.some(q => q === j.cat)).filter(i => search(i, state.skillSearchTerm, state.importancyLevel)).length;
+        skillz = [
+                h('div.row',(grid.col(heading.h2('Skills'), {xs: 12}))),
+            ].concat(filteredCats.map((i, idx) => h('div.row', [
+            (idx > 0) ? h('span.snapTo.off150') : '',
+            grid.col(heading.h3(cat2h[i]), {xs: 12}),
+            ...(() => {
+                const tmp = _.orderBy(state.skills.map((i, idx) => _.merge({}, i, {key: idx})).filter(j => j.cat === i).filter(i => search(i, state.skillSearchTerm, state.importancyLevel)), [state.sortSKBy], [state.sortSKDesc ? 'desc': 'asc'])
+                .map(j => grid.col(skills(j, state.channels, state.skillCollapsedState[j.key]), {xs: 12, md: 6}));
+                return tmp;
+            })()
+        ])));
+        languages = [heading.h2('Languages', ['h3']),, h('div.row', [
             ..._.orderBy(state.skills.map((i, idx) => _.merge({}, i, {key: idx})).filter(j => j.cat === 'hum'), [state.sortSKBy], [state.sortSKDesc ? 'desc': 'asc'])
                 .map(j => grid.col(skills(j, state.channels, state.skillCollapsedState[j.key]), {xs: 12, md: 6}))
         ])];
     }
     const contactInfo = (state.contactInfo.length > 0) ? vcf.fromJSON( state.contactInfo ) : undefined;
+    const searchSkillsId = 'searchSkills';
+    const filterSkillsId = 'filterSkills';
+    const skillSectionId = 'skillSectionId';
     return h('div#scrollContainer', [
         h(`div.container-fluid.sticky-head${state.contactDataVisible ? "" : ".hidden"}${state.contactBorderVisible ? "" : ".border"}`, contact(contactInfo)),
+        h('span.snapTo'),
         cover(state, state.channels),
-        h('hr.sticky-head-reveal.snapTo'),
+        h('span.sticky-head-reveal.snapTo'),
         h(`div.main-wrapper${state.summeryIsTight ? '' : '.tight'}`, main([
             summery(state, state.channels),
-            h('section.snapTo', [
+            h('section', [
                 heading.h2('CV', ['visible-print-block']),
                 ...cv,
             ]),
-            h('section.snapTo', [
-                heading.h2('Languages', ['visible-print-block']),
+            h('span.snapTo.off140'),
+            h('section.languages.item', [
                 ...languages
             ]),
-            h('input', {
-                'name': 'searchterm',
-                'ev-keyup': hg.sendValue(state.channels.setSkillSearchTermstate),
-            }),
-            h('input', {
-                'name': 'level',
-                type: 'range',
-                min: 1, max: 10, value: state.importancyLevel,
-                'ev-change': hg.sendValue(state.channels.setSkillImportancyLevel),
-            }),
-            h('div', `Level: ${state.importancyLevel}`),
-            h('section', [
-                heading.h2('Skills', ['visible-print-block']),
+            h(`menu.navbar.navbar-light.bg-faded.container.bottom${state.filterVisible ? '' : '.hidden'}`, {
+                type: 'toolbar'
+            }, h('span.row', [
+                    h('label.sr-only', {
+                        'htmlFor': searchSkillsId,
+                    }, 'Filter the list of skills using a search term'),
+                    h('span.col-xs-4', h('input.form-control', {
+                        'name': 'searchterm',
+                        'id': searchSkillsId,
+                        'placeholder': 'Search Skills',
+                        'aria-controls': skillSectionId,
+                        'ev-keyup': hg.sendValue(state.channels.setSkillSearchTermstate),
+                    })),
+                    h('span.col-xs-3'),
+                    h('label.sr-only', {
+                        'htmlFor': filterSkillsId,
+                    }, 'Filter less known items from the list of skills (1) or display the entire range (10)'),
+                    h('span.col-xs-4', h('input.form-control', {
+                        'name': 'level',
+                        id: filterSkillsId,
+                        type: 'range',
+                        'aria-controls': skillSectionId,
+                        min: 1, max: 10, value: state.importancyLevel,
+                        'ev-change': hg.sendValue(state.channels.setSkillImportancyLevel),
+                    })),
+                    h('div.col-xs-1', {
+                        'aria-live': 'polite',
+                        role: 'status'
+                    }, [
+                        h('span', `Level: ${state.importancyLevel}`),
+                        h('span.sr-only', `Displaing ${numberOfSkills} Skills`)
+                    ]),
+            ])),
+            h('span.snapTo.off140.filterMenuOn'),
+            h(`section.skills.item#${skillSectionId}`, [
                 ...skillz
             ]),
+            h('span.snapTo.off140.filterMenuOff'),
+            h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),
+            h('span.snapTo'),h('div', 'T1'),
+            h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),
+            h('span.snapTo'),h('div', 'T2'),
+            h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),
+            h('span.snapTo'),h('div', 'T3'),
+            h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),
+            h('span.snapTo'),h('div', 'T4'),
+            h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),h('br'),
         ])),
-        h('hr.sticky-head-reveal.snapTo'),
     ]);
 };
 

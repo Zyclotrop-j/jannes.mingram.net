@@ -10,8 +10,10 @@ export default function(cvitem, channels) {
         grid.row([grid.col([
             grid.row([
                 grid.col(h('h4.name', cvitem.name)),
-                grid.col(h('i.description', cvitem.description)),
-                !!cvitem.url ? grid.col(h('a.description', {href: cvitem.url}, [h('i.fa.fa-external-link', [srOnly('More information available in external link')])])) : '',
+                grid.col([
+                    h('i.description', cvitem.description),
+                    !!cvitem.url ? h('a.description', {href: cvitem.url}, [h('i.fa.fa-external-link', [srOnly('More information available in external link')])]) : '',
+                ]),
                 grid.col(location(cvitem.location, channels)),
             ])
         ], {xs: 12, md: 6}, {}, [{md: 3}, {}]), grid.col([
@@ -20,11 +22,11 @@ export default function(cvitem, channels) {
                         label: cvitem.startLabel,
                         datetime: cvitem.startDate,
                     }, channels),
-                    (cvitem.endLabel !== '' && h('span', ' - ')) || '',
-                    time({
+                    (cvitem.endLabel !== '' && cvitem.endLabel !== cvitem.startLabel && h('span', ' - ')) || '',
+                    (cvitem.endLabel !== cvitem.startLabel && time({
                         label: cvitem.endLabel,
                         datetime: cvitem.endDate,
-                    }, channels),
+                    }, channels)) || '',
                 ]))),
         ], {xs : 12, md: 3}, {}, [{}, {md: 6}])]),
     
